@@ -9,7 +9,7 @@ const selectedItem = ref(null)
 	}
 </script>
 <template>
-    <AutoComplete :items="customers"
+    <AutoComplete :data="customers"
       filterby="name"
       title="Search for a customer"
       @selected="customerSelected"/>
