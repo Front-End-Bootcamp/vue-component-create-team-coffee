@@ -6,17 +6,11 @@ import AutoComplete from './components/AutoComplete.vue'
 	}
 </script>
 <template>
-  <div id="app">
     <AutoComplete :items="customers"
       filterby="name"
       title="Search for a customer"
       @selected="customerSelected"/>
-  </div>
 </template>
 <style>
-#app {
-  margin: 0px auto;
-  margin-top: 60px;
-  width: 400px;
-}
+
 </style>
