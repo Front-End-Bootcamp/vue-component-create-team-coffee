@@ -12,7 +12,7 @@
 	onMounted(async () => {
 		autocompleteData.value = await fetchData()
 	})
-
+	
 </script>
 <template>
 	<AutoComplete :data="autocompleteData" filterBy="name" title="Search for a customer" @setSelected="selectHandler"></AutoComplete>
