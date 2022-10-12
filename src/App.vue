@@ -9,16 +9,11 @@ const selectedItem = ref(null)
 	}
 </script>
 <template>
-  <div id="app">
-    <AutoComplete :data="customers"
+    <AutoComplete :items="customers"
       filterby="name"
       title="Search for a customer"
-      @setSelected="customerSelected"/>
-  </div>
+      @selected="customerSelected"/>
 </template>
 <style>
-#app {
-  margin: 0px auto;
-  margin-top: 60px;
-}
+
 </style>
