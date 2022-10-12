@@ -6,7 +6,7 @@ import AutoComplete from './components/AutoComplete.vue'
 	}
 </script>
 <template>
-    <AutoComplete :items="customers"
+    <AutoComplete :data="customers"
       filterby="name"
       title="Search for a customer"
       @selected="customerSelected"/>
