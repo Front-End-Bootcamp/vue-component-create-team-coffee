@@ -1,19 +1,20 @@
 <script setup>
-import { ref } from 'vue';
-import customers from './assets/data/customers.json';
-import AutoComplete from './components/AutoComplete.vue'
-const selectedItem = ref(null)
-	const customerSelected = (customer) => {
-		console.log(`Customer Selected:\nid: ${customer.id}\nname: ${customer.name}`);
-		selectedItem.value = customer
+	import AutoComplete from './components/AutoComplete/AutoComplete.vue';
+	import Popup from './components/Popup/Popup.vue';
+	import {fetchData} from './service/data';
+	import { onMounted, ref } from 'vue';
+
+	const autocompleteData = ref([])
+	const selectHandler = (item) => {
+		console.log('item :>> ', item);
 	}
+
+	onMounted(async () => {
+		autocompleteData.value = await fetchData()
+	})
+
 </script>
 <template>
-    <AutoComplete :data="customers"
-      filterby="name"
-      title="Search for a customer"
-      @selected="customerSelected"/>
+	<AutoComplete :data="autocompleteData" filterBy="name" title="Search for a customer" @setSelected="selectHandler"></AutoComplete>
+	<Popup></Popup>
 </template>
-<style>
-
-</style>
