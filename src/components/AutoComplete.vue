@@ -1,175 +1,136 @@
 <script setup>
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 const props = defineProps(["data", "filterby", "title"]);
-const emit = defineEmits(['selected']);
+const emit = defineEmits(['setSelected']);
 const input = ref(null);
 const optionsList = ref(null);
 const itemHeight = ref(39);
 const selectedItem = ref(null);
-const selected = ref(0);
 const visible = ref(true);
 const query = ref('');
-const itemClicked = (index) => {
-	selected.value = index;
-  return selectItem();
+
+const matches = computed(() => {
+	return props.data.filter((item) => item[props.filterby].toLowerCase().includes(query.value.toLowerCase()))
+})
+
+const itemClicked = (match) => {
+	selectedItem.value = match;
+	query.value = match.name;
+	emit('setSelected', selectedItem.value);
 }
-const selectItem = () => {
-	if (!matches.value.length) {
-    return;
-  }
-  selectedItem.value = matches.value[selected.value];
-	query.value = selectedItem.value.name;
-	selected.value = 0;
-  emit('selected', selectedItem.value); // değeri konsolda görmek için emit gönderdik
-}
+
 const remove = () => {
 	query.value = '';
 	selectedItem.value = 0;
 }
-const up = () => {
-	if (selected.value == 0) {
-  	return;
-  }
-  selected.value -= 1;
-  return scrollToItem();
-}
-const down = () => {
-	if (selected.value >= matches.value.length - 1) {
-    return;
-  }
 
-  selected.value += 1;
-  return scrollToItem();
-}
-const scrollToItem = () => {
-	return optionsList.value.scrollTop = selected.value * itemHeight.value;
-}
-const matches = computed(() => {
-  // emit('change', query.value);
+// const scrollToItem = () => {
+// 	return optionsList.value.scrollTop = selected.value * itemHeight.value;
+// }
 
-  if (query.value == '') {
-    return [];
-  }
-
-  return props.data.filter((item) => item[props.filterby].toLowerCase().includes(query.value.toLowerCase()))
-  }
-)
 </script>
 <template>
-  <!-- <div class="autocomplete"> -->
-    <div class="popover" v-show="visible">
-      <input type="text" 
-        ref="input"
-        v-model="query"
-        @keydown.up="up"
-        @keydown.down="down"
-        @keydown.enter="selectItem"
-        placeholder="Start Typing...">
+	<!-- <div class="autocomplete"> -->
+	<div class="container">
+		<pre>{{matches}}</pre>
+		<div class="popover" v-show="visible">
+			<div class="input-wrapper">
+				<input class="popover__input" type="text" ref="input" v-model.trim="query"
+					@keydown.enter="selectItem" placeholder="Start Typing...">
 				<button class="close" @click="remove " v-if="selectedItem">X</button>
-      <div class="options" ref="optionsList">
-        <ul >
-          <li v-for="(match, index) in matches"
-            :key="index"
-            :class="{ 'selected': (selected == index)}"
-            @click="itemClicked(index)"
-            v-text="match[filterby]"></li>
-        </ul>
-      </div>
-    </div>
-  <!-- </div> -->
+			</div>
+
+			<div class="options" ref="optionsList">
+				<ul>
+					<li v-for="match in matches" :key="match.id" :class="{ 'selected': (selectedItem?.id == match.id)}"
+						@click="itemClicked(match)" v-text="match[filterby]"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- </div> -->
 </template>
 <style scoped>
-.autocomplete {
-		bottom: 250px;
-    width: 100%;
-    position: relative;
-		background: #fff;
-		
+
+.container{
+	display: flex;
 }
 .popover {
-    min-height: 40px;
-		width: 300px;
-    border: 2px solid lightgray;
-    /* position:fixed; */
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-top-right-radius: 25px;
-		border-bottom-right-radius: 25px;
+	min-width: 300px;
+	border: 2px solid lightgray;
+	border-radius: 25px;
+	overflow: hidden;
+	text-align: center;
+	justify-content: center;
+}
 
-		border-top-left-radius: 25px;
-		border-bottom-left-radius: 25px;
-		
-    text-align: center;
-		justify-content: center;
+
+.input-wrapper {
+	display: flex;
 }
-.popover input {
-    width: 100%;
-    min-height: 50px;
-    font-size: 16px;
-		border-top-right-radius: 25px;
-		border-bottom-right-radius: 25px;
-		border-top-left-radius: 25px;
-		border-bottom-left-radius: 25px;
-    border: 1px solid lightgray;
-		background:  #fff ;
-		color: black;
+
+.popover__input {
+	flex: 1;
+	padding: 15px 20px;
+	font-size: 16px;
+	border-radius: 25px;
 }
+
 .close {
-    position: absolute;
-    right: 8px;
-    top: 6px;
-    background: none;
-    border: none;
-    color: black;
-    cursor: pointer;
-		align-items: center;
-		justify-content: center;
-		display: inline-block;
+	color: black;
+	padding: 0 8px;
+	cursor: pointer;
 }
+
 .options {
-    max-height: 450px;
-    overflow-y: scroll;
-		color: black;
-		align-items: center;
-		justify-content: center;
-		display: static;
+	max-height: 450px;
+	color: black;
+	align-items: center;
+	justify-content: center;
+	overflow-y: scroll;
+
 
 
 }
 
 .options ul {
-    /* list-style-type: none; */
-    text-align: left;
-		border-top-right-radius: 25px;
-		border-bottom-right-radius: 25px;
-		border-top-left-radius: 25px;
-		border-bottom-left-radius: 25px;
+	/* list-style-type: none; */
+	text-align: left;
+	border-top-right-radius: 25px;
+	border-bottom-right-radius: 25px;
+	border-top-left-radius: 25px;
+	border-bottom-left-radius: 25px;
+
 }
+
 .options ul li {
-		list-style-type: none;
-    border-bottom: 1px solid lightgray;
-    padding: 10px;
-    cursor: pointer;
-    background: #f1f1f1;
-		position:flex;
-		/* border-top-right-radius: 25px;
+	list-style-type: none;
+	border-bottom: 1px solid lightgray;
+	padding: 10px;
+	cursor: pointer;
+	min-width: 100%;
+	background: #f1f1f1;
+	position: flex;
+	/* border-top-right-radius: 25px;
 		border-bottom-right-radius: 25px;
 		border-top-left-radius: 25px;
 		border-bottom-left-radius: 25px; */
 }
+
 .options ul li:first-child {
-    border-top: 2px solid #d6d6d6;
+	border-top: 2px solid #d6d6d6;
 }
 
 .options ul li:not(.selected):hover {
-    background: #bfb3b3;
-    color: #fff;
+	background: #bfb3b3;
+	color: #fff;
 }
+
 .options ul li.selected {
-    background: rgb(143, 135, 135) ;
-    color: #fff;
-    font-weight: 600;
-		display: none;
+	background: rgb(143, 135, 135);
+	color: #fff;
+	font-weight: 600;
 }
 </style>
