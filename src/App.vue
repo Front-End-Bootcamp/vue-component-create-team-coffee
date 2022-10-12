@@ -1,5 +1,5 @@
 <script setup>
-import customers from './assets/customers';
+import customers from './assets/data/customers.json';
 import AutoComplete from './components/AutoComplete.vue'
 	const customerSelected = (customer) => {
 		console.log(`Customer Selected:\nid: ${customer.id}\nname: ${customer.name}`);
@@ -7,7 +7,7 @@ import AutoComplete from './components/AutoComplete.vue'
 </script>
 <template>
   <div id="app">
-    <AutoComplete :items="customers"
+    <AutoComplete :data="customers"
       filterby="name"
       title="Search for a customer"
       @selected="customerSelected"/>

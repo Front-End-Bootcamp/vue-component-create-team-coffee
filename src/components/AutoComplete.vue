@@ -1,6 +1,6 @@
 <script setup>
 import {computed, ref} from "vue";
-const props = defineProps(["items", "filterby", "title"]);
+const props = defineProps(["data", "filterby", "title"]);
 const emit = defineEmits(['selected']);
 const input = ref(null);
 const optionsList = ref(null);
@@ -20,7 +20,7 @@ const selectItem = () => {
   selectedItem.value = matches.value[selected.value];
 	query.value = selectedItem.value.name;
 	selected.value = 0;
-  emit('selected', selectedItem.value);
+  emit('selected', selectedItem.value); // değeri konsolda görmek için emit gönderdik
 }
 const remove = () => {
 	query.value = '';
@@ -51,12 +51,12 @@ const matches = computed(() => {
     return [];
   }
 
-  return props.items.filter((item) => item[props.filterby].toLowerCase().includes(query.value.toLowerCase()))
+  return props.data.filter((item) => item[props.filterby].toLowerCase().includes(query.value.toLowerCase()))
   }
 )
 </script>
 <template>
-  <div class="autocomplete">
+  <!-- <div class="autocomplete"> -->
     <div class="popover" v-show="visible">
       <input type="text" 
         ref="input"
@@ -67,7 +67,7 @@ const matches = computed(() => {
         placeholder="Start Typing...">
 				<button class="close" @click="remove " v-if="selectedItem">X</button>
       <div class="options" ref="optionsList">
-        <ul>
+        <ul >
           <li v-for="(match, index) in matches"
             :key="index"
             :class="{ 'selected': (selected == index)}"
@@ -76,7 +76,7 @@ const matches = computed(() => {
         </ul>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 <style scoped>
 .autocomplete {
@@ -88,8 +88,9 @@ const matches = computed(() => {
 }
 .popover {
     min-height: 40px;
+		width: 300px;
     border: 2px solid lightgray;
-    position: absolute;
+    /* position:fixed; */
     left: 0;
     right: 0;
     background: #fff;
@@ -104,7 +105,7 @@ const matches = computed(() => {
 }
 .popover input {
     width: 100%;
-    min-height: 40px;
+    min-height: 50px;
     font-size: 16px;
 		border-top-right-radius: 25px;
 		border-bottom-right-radius: 25px;
@@ -124,6 +125,7 @@ const matches = computed(() => {
     cursor: pointer;
 		align-items: center;
 		justify-content: center;
+		display: inline-block;
 }
 .options {
     max-height: 450px;
@@ -131,11 +133,13 @@ const matches = computed(() => {
 		color: black;
 		align-items: center;
 		justify-content: center;
+		display: static;
+
 
 }
 
 .options ul {
-    list-style-type: none;
+    /* list-style-type: none; */
     text-align: left;
 		border-top-right-radius: 25px;
 		border-bottom-right-radius: 25px;
@@ -143,10 +147,12 @@ const matches = computed(() => {
 		border-bottom-left-radius: 25px;
 }
 .options ul li {
+		list-style-type: none;
     border-bottom: 1px solid lightgray;
     padding: 10px;
     cursor: pointer;
     background: #f1f1f1;
+		position:flex;
 		/* border-top-right-radius: 25px;
 		border-bottom-right-radius: 25px;
 		border-top-left-radius: 25px;
@@ -164,5 +170,6 @@ const matches = computed(() => {
     background: rgb(143, 135, 135) ;
     color: #fff;
     font-weight: 600;
+		display: none;
 }
 </style>
