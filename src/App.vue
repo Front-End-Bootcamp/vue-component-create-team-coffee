@@ -15,6 +15,6 @@
 	
 </script>
 <template>
-	<AutoComplete :data="autocompleteData" filterBy="name" title="Search for a customer" @setSelected="selectHandler"></AutoComplete>
+	<AutoComplete :options="autocompleteData" optionText="name" label="Search for a customer" @setSelected="selectHandler"></AutoComplete>
 	<Popup></Popup>
 </template>
