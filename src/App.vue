@@ -1,20 +1,48 @@
 <script setup>
 	import AutoComplete from './components/AutoComplete/AutoComplete.vue';
 	import Popup from './components/Popup/Popup.vue';
-	import {fetchData} from './service/data';
-	import { onMounted, ref } from 'vue';
+	import {fetchData , filterBySearchInput} from './service/data';
+	import { onMounted, ref} from 'vue';
 
 	const autocompleteData = ref([])
+	const searchText = ref("")
+	const filterBySearch = ref(null)
+	const isLoading = ref(false)
 	const selectHandler = (item) => {
 		console.log('item :>> ', item);
 	}
-
+	function delay(ms) {
+  	return new Promise(resolve => setTimeout(resolve, ms));
+	}
+	
 	onMounted(async () => {
+		isLoading.value = true
 		autocompleteData.value = await fetchData()
+		isLoading.value = false
 	})
 	
+	const searchTextHandler = async (text) => {
+		filterBySearch.value = []
+		searchText.value = text
+		isLoading.value = true
+		await delay(500)
+		const filteredData = filterBySearchInput(autocompleteData.value, searchText.value)
+		filterBySearch.value = searchText.value ? filteredData : null
+		isLoading.value = false
+	}
+
 </script>
 <template>
-	<AutoComplete :options="autocompleteData" optionText="name" label="Search for a customer" @setSelected="selectHandler"></AutoComplete>
+	<AutoComplete
+		matchComponent="b"
+		textKey="API"
+		label="Search for a customer" 
+		color="#000" 
+		:searchValue="searchText"
+		:options="filterBySearch" 
+		:isLoading="isLoading"
+		@setSelected="selectHandler"
+  	@setSearchText="searchTextHandler"
+		></AutoComplete>
 	<Popup></Popup>
 </template>
