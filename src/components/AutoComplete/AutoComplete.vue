@@ -2,42 +2,46 @@
 import { ref, computed } from 'vue';
 import { useClickOnTarget } from '@/composables/clickOnTarget';
 import OptionComp from './AutoCompleteOption.vue';
-import NoOptionComp from './AutoCompleteNoOption.vue';
+import InfoComp from './AutoCompleteInfo.vue';
 import InputComp from './AutoCompleteInput.vue';
 
-const props = defineProps(["options", "optionText", "label"])
-const emits = defineEmits(["setSelected"])
-
+const props = defineProps(["options", "searchValue","textKey", "label", "matchComponent", "color", "isLoading"])
+const emits = defineEmits(["setSearchText","setSelected"])
 const wrapper = ref(null) //template ref clickoutside özelliğini kullanabilmek için
-const searchText = ref("")	//Inputtan gelen değer
+const searchText = ref(props.searchValue)	//Inputtan gelen değer
 const selectedOption = ref(null) // Seçilen option
 const inputValue = computed(() => searchText.value || optionText(selectedOption.value)) //Inputa verilen değer seçilen option'ın text'i yada inputtan gelen değer.
-const filterBySearch = computed(() => props.options.filter(option => optionText(option).toLowerCase().includes(searchText.value.toLowerCase())))
-const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
+const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value && props.options) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
 const isClickOnTarget = useClickOnTarget(wrapper) //Hedefe yani autocomplete'e tıklanıldı mı.
-const optionText = (option) => option?.[props.optionText] //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
+const optionText = (option) => option?.[props.textKey] //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
 
 const selectOptionHandler = (option) => {
-	searchText.value = ""
+	searchText.value = optionText(option)
 	selectedOption.value = option
-	emits("setSelected", option)
+	emitHandler("setSelected", option)
+	emitHandler("setSearchText", searchText.value)
 }
 
 const searchTextHandler = (text) => {
 	searchText.value = text
 	selectedOption.value = null
+	emitHandler("setSearchText", searchText.value)
 }
 
 const clearSearchTextHandler = () => {
 	searchText.value = ""
 	selectedOption.value = null
+	emitHandler("setSearchText", searchText.value)
+}
+
+const emitHandler = (emitName, emitValue) => {
+	emits(emitName, emitValue)
 }
 
 </script>
 
 <template>
 	<div ref="wrapper" class="autocomplete">
-
 		<InputComp
 			:label="props.label"
 			:inputValue="inputValue"
@@ -47,22 +51,22 @@ const clearSearchTextHandler = () => {
 			@clearSearchText="clearSearchTextHandler"
 		></InputComp>
 
-		<div v-if="filterBySearch.length > 0" v-show="showOptions" class="autocomplete__options">
-			<OptionComp 
-				class="result" 
-				matchComponent="b" 
-				:name="optionText(option)" 
+
+		<div v-show="showOptions" class="autocomplete__options">
+			<OptionComp
+				class="result"
+				:matchComponent= props.matchComponent
+				:name="optionText(option)"
 				:match="searchText"
-				:class="{'selected' : optionText(selectedOption) === optionText(option)}" 
+				:class="{'selected' : optionText(selectedOption) === optionText(option)}"
 				@setSelected="selectOptionHandler(option)"
-				v-for="option in filterBySearch">
+				v-for="option in props.options">
 			</OptionComp>
 		</div>
 
-		<NoOptionComp v-else :searchText="searchText"></NoOptionComp>
+		<InfoComp v-if="props.isLoading || props.options?.length < 1" :isLoading="props.isLoading" :searchText="searchText"></InfoComp>
 	</div>
 </template>
-
 
 <style lang="scss" scoped>
 .autocomplete {
