@@ -5,13 +5,44 @@ import OptionComp from './AutoCompleteOption.vue';
 import InfoComp from './AutoCompleteInfo.vue';
 import InputComp from './AutoCompleteInput.vue';
 
-const props = defineProps(["options", "searchValue","textKey", "label", "matchComponent", "color", "isLoading"])
+// const props = defineProps(["options", "searchValue","textKey", "label", "matchComponent", "isLoading", "inputColor", "optionsColor", "optionColor", "iconColor", "infoColor"])
+const props = defineProps({
+	options: Array,
+	searchValue: String,
+	textKey: String,
+	isLoading: Boolean,
+	label: {
+		type: String,
+		default: "Type for search..."
+	},
+	matchComponent: {
+		type: String,
+		default: "b"
+	},
+	inputColor: {
+		type: String,
+		default: "#1E293B"
+	},
+	optionColor: {
+		type: String,
+		default: "#1E293B"
+	},
+	iconColor: {
+		type: String,
+		default: "#fff"
+	},
+	infoColor: {
+		type: String,
+		default: "#1E293B"
+	}
+	
+})
 const emits = defineEmits(["setSearchText","setSelected"])
 const wrapper = ref(null) //template ref clickoutside özelliğini kullanabilmek için
 const searchText = ref(props.searchValue)	//Inputtan gelen değer
 const selectedOption = ref(null) // Seçilen option
 const inputValue = computed(() => searchText.value || optionText(selectedOption.value)) //Inputa verilen değer seçilen option'ın text'i yada inputtan gelen değer.
-const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value && props.options) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
+const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value && props.options?.length > 0) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
 const isClickOnTarget = useClickOnTarget(wrapper) //Hedefe yani autocomplete'e tıklanıldı mı.
 const optionText = (option) => option?.[props.textKey] //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
 
@@ -43,6 +74,8 @@ const emitHandler = (emitName, emitValue) => {
 <template>
 	<div ref="wrapper" class="autocomplete">
 		<InputComp
+			:color="props.inputColor"
+			:iconColor="props.iconColor"
 			:label="props.label"
 			:inputValue="inputValue"
 			:selectedOption="selectedOption"
@@ -54,7 +87,7 @@ const emitHandler = (emitName, emitValue) => {
 
 		<div v-show="showOptions" class="autocomplete__options">
 			<OptionComp
-				class="result"
+				:color="props.optionColor"
 				:matchComponent= props.matchComponent
 				:name="optionText(option)"
 				:match="searchText"
@@ -64,16 +97,16 @@ const emitHandler = (emitName, emitValue) => {
 			</OptionComp>
 		</div>
 
-		<InfoComp v-if="props.isLoading || props.options?.length < 1" :isLoading="props.isLoading" :searchText="searchText"></InfoComp>
+		<InfoComp v-if="props.isLoading || props.options?.length < 1" :isLoading="props.isLoading" :searchText="searchText" :color="props.infoColor"></InfoComp>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .autocomplete {
-	@apply w-[500px] my-5 mx-auto select-none;
+	@apply w-[500px] mx-auto mt-5 select-none rounded-md overflow-hidden;
 
 	&__options{
-		@apply max-h-[300px] overflow-y-auto border rounded-md border-slate-200;
+		@apply max-h-[300px] overflow-y-auto rounded-md divide-y border border-slate-400 border-t-0;
 	}
 }
 </style>
