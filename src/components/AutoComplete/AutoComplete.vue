@@ -5,12 +5,23 @@ import OptionComp from './AutoCompleteOption.vue';
 import InfoComp from './AutoCompleteInfo.vue';
 import InputComp from './AutoCompleteInput.vue';
 
-// const props = defineProps(["options", "searchValue","textKey", "label", "matchComponent", "isLoading", "inputColor", "optionsColor", "optionColor", "iconColor", "infoColor"])
 const props = defineProps({
 	options: Array,
 	searchValue: String,
 	textKey: Function,
 	isLoading: Boolean,
+	loadingMsg: {
+		type: String,
+		default: "Options loading."
+	},
+
+	noOptionsMsg: {
+		type: Function,
+		default(searchText){
+			return `Your search - ${searchText} - did not match any options.`
+		}
+	},
+
 	label: {
 		type: String,
 		default: "Type for search..."
@@ -96,42 +107,40 @@ const emitHandler = (emitName, emitValue) => {
 				@setSelected="selectOptionHandler(option)"
 				v-for="option in props.options">
 			</OptionComp>
-			<slot 
-				name="option" 
-				:name="optionText(option)" 
-				:match="searchText"
-				:class="{'selected' : optionText(selectedOption) === optionText(option)}"
-				@setSelected="selectOptionHandler(option)"
-				v-for="option in props.options"
-				></slot>
 		</div>
 
-		<InfoComp v-if="props.isLoading || props.options?.length < 1" :isLoading="props.isLoading" :searchText="searchText" :color="props.infoColor"></InfoComp>
+		<InfoComp 
+			v-if="props.isLoading || props.options?.length < 1" 
+			:isLoading="props.isLoading" 
+			:searchText="searchText" 
+			:color="props.infoColor"
+			:loadingMsg="props.loadingMsg"
+			:noOptionsMsg="props.noOptionsMsg"
+			></InfoComp>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-
-	::-webkit-scrollbar {
-		width: 12px;
-	}
-
-	::-webkit-scrollbar-track {
-		background-color: #334155;
-		border-radius: 100px;
-	}
-
-	::-webkit-scrollbar-thumb {
-		background: #0f172a;
-		border-radius: 100px;
-		min-height: 15%;
-	}
-
 .autocomplete {
 	@apply w-[500px] mx-auto mt-5 select-none rounded-md overflow-hidden;
 
 	&__options{
 		@apply max-h-[300px] overflow-y-auto rounded-md divide-y border border-slate-400 border-t-0;
 	}
+}
+
+::-webkit-scrollbar {
+		width: 12px;
+	}
+
+::-webkit-scrollbar-track {
+	background-color: #334155;
+	border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #0f172a;
+	border-radius: 100px;
+	min-height: 15%;
 }
 </style>
