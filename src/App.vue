@@ -33,16 +33,26 @@
 
 </script>
 <template>
-	<AutoComplete
-		matchComponent="b"
-		textKey="API"
-		label="Search for a customer" 
-		color="#000" 
-		:searchValue="searchText"
-		:options="filterBySearch" 
-		:isLoading="isLoading"
-		@setSelected="selectHandler"
-  	@setSearchText="searchTextHandler"
+	<div class="app-container">
+		<AutoComplete
+			matchComponent="b"
+			textKey="API"
+			label="Search for a customer" 
+			inputColor="#1E293B"
+			optionColor="#1E293B"
+			infoColor="#1E293B"
+			iconColor="#fff"
+			:searchValue="searchText"
+			:options="filterBySearch" 
+			:isLoading="isLoading"
+			@setSelected="selectHandler"
+			@setSearchText="searchTextHandler"
 		></AutoComplete>
-	<Popup></Popup>
+		<Popup></Popup>
+	</div>
+
 </template>
+
+<style scoped lang="scss">
+
+</style>
