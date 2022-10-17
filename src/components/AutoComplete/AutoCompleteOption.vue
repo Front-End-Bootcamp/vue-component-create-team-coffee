@@ -5,17 +5,13 @@ const props = defineProps({
 	name: String,
 	match: String,
 	color: String,
-	matchComponent: {
-		type: String,
-		default: "mark"
-	}
+	matchComponent: String
 })
 const emits = defineEmits(["setSelected"])
 const regex = computed(() => props.match ? new RegExp(`(${props.match})`, "gi") : false)
 const parts = computed(() => props.name.split(regex.value))
 const checkComponent = (part) => regex.value.test?.(part) ? props.matchComponent : 'span'
 const styleObj = {backgroundColor: props.color, color: invertColor(props.color)}
-
 const selectedOptionHandler = () => {
 	emits("setSelected")
 } 
@@ -44,5 +40,11 @@ const selectedOptionHandler = () => {
 }
 .selected {
 	@apply bg-slate-700;
+}
+
+mark{
+	background-color: v-bind(invertColor(color));
+	padding: 0 3px;
+	border-radius: 5px
 }
 </style>

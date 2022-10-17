@@ -9,7 +9,7 @@ import InputComp from './AutoCompleteInput.vue';
 const props = defineProps({
 	options: Array,
 	searchValue: String,
-	textKey: String,
+	textKey: Function,
 	isLoading: Boolean,
 	label: {
 		type: String,
@@ -44,7 +44,7 @@ const selectedOption = ref(null) // Seçilen option
 const inputValue = computed(() => searchText.value || optionText(selectedOption.value)) //Inputa verilen değer seçilen option'ın text'i yada inputtan gelen değer.
 const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value && props.options?.length > 0) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
 const isClickOnTarget = useClickOnTarget(wrapper) //Hedefe yani autocomplete'e tıklanıldı mı.
-const optionText = (option) => option?.[props.textKey] //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
+const optionText = (option) => props.textKey(option) //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
 
 const selectOptionHandler = (option) => {
 	searchText.value = optionText(option)
@@ -72,7 +72,7 @@ const emitHandler = (emitName, emitValue) => {
 </script>
 
 <template>
-	<div ref="wrapper" class="autocomplete">
+	<div ref="wrapper"  class="autocomplete">
 		<InputComp
 			:color="props.inputColor"
 			:iconColor="props.iconColor"
@@ -80,6 +80,7 @@ const emitHandler = (emitName, emitValue) => {
 			:inputValue="inputValue"
 			:selectedOption="selectedOption"
 			:showOptions="showOptions"
+			:isLoading="props.isLoading"
 			@setSearchText="searchTextHandler"
 			@clearSearchText="clearSearchTextHandler"
 		></InputComp>
@@ -95,6 +96,14 @@ const emitHandler = (emitName, emitValue) => {
 				@setSelected="selectOptionHandler(option)"
 				v-for="option in props.options">
 			</OptionComp>
+			<slot 
+				name="option" 
+				:name="optionText(option)" 
+				:match="searchText"
+				:class="{'selected' : optionText(selectedOption) === optionText(option)}"
+				@setSelected="selectOptionHandler(option)"
+				v-for="option in props.options"
+				></slot>
 		</div>
 
 		<InfoComp v-if="props.isLoading || props.options?.length < 1" :isLoading="props.isLoading" :searchText="searchText" :color="props.infoColor"></InfoComp>
@@ -102,6 +111,22 @@ const emitHandler = (emitName, emitValue) => {
 </template>
 
 <style lang="scss" scoped>
+
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: #334155;
+		border-radius: 100px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #0f172a;
+		border-radius: 100px;
+		min-height: 15%;
+	}
+
 .autocomplete {
 	@apply w-[500px] mx-auto mt-5 select-none rounded-md overflow-hidden;
 

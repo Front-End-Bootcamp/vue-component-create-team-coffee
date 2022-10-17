@@ -1,6 +1,6 @@
 <script setup>
 import { invertColor } from "@/utils"
-const props = defineProps(["label", "inputValue", "selectedOption", "showOptions", "color", "iconColor"])
+const props = defineProps(["label", "inputValue", "selectedOption", "showOptions", "color", "iconColor", "isLoading"])
 const emits = defineEmits(["setSearchText", "clearSearchText"])
 
 const searchTextHandler = (event) => {
@@ -10,6 +10,7 @@ const searchTextHandler = (event) => {
 const clearSearchTextHandler = () => {
 	emits("clearSearchText")
 }
+
 
 const styleObj = {
 	backgroundColor: props.color,
@@ -27,6 +28,10 @@ const styleObj = {
 		<div class="input__icons" :style="{color: props.iconColor}">
 			<span v-show="props.selectedOption" @click="clearSearchTextHandler" class="material-icons close-icon">
 				close
+			</span>
+
+			<span v-if="props.isLoading" class="material-icons loading-icon">
+				autorenew
 			</span>
 
 			<span :class="{'active': props.showOptions}" class="material-icons expand-icon">
@@ -53,6 +58,9 @@ const styleObj = {
 		}
 		.expand-icon {
 			@apply delay-75 transition-all flex items-center p-1 rounded-full cursor-pointer
+		}
+		.loading-icon {
+			@apply text-lg flex items-center p-1 rounded-full animate-spin
 		}
 		.active {
 			@apply rotate-180
