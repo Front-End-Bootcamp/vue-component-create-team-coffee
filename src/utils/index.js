@@ -27,3 +27,8 @@ function padZero(str, len) {
 	var zeros = new Array(len).join('0');
 	return (zeros + str).slice(-len);
 }
+
+
+export function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

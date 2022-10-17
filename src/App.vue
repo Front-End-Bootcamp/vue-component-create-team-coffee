@@ -1,7 +1,8 @@
 <script setup>
 	import AutoComplete from './components/AutoComplete/AutoComplete.vue';
 	import Popup from './components/Popup/Popup.vue';
-	import {fetchData , filterBySearchInput} from './service/data';
+	import {delay} from '@/utils';
+	import {fetchData , filterBySearchInput} from '@/service/data';
 	import { onMounted, ref} from 'vue';
 
 	const autocompleteData = ref([])
@@ -10,9 +11,6 @@
 	const isLoading = ref(false)
 	const selectHandler = (item) => {
 		console.log('item :>> ', item);
-	}
-	function delay(ms) {
-  	return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	
 	onMounted(async () => {
