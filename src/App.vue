@@ -34,14 +34,14 @@
 	<div class="app-container">
 		<AutoComplete
 			matchComponent="b"
-			textKey="API"
-			label="Search for a customer" 
+			label="Search in free apis..."
 			inputColor="#1E293B"
 			optionColor="#1E293B"
 			infoColor="#1E293B"
 			iconColor="#fff"
+			:textKey="(option) => option?.API"
 			:searchValue="searchText"
-			:options="filterBySearch" 
+			:options="filterBySearch"
 			:isLoading="isLoading"
 			@setSelected="selectHandler"
 			@setSearchText="searchTextHandler"
