@@ -34,11 +34,13 @@
 	<div class="app-container">
 		<AutoComplete
 			matchComponent="b"
-			label="Search in free apis..."
 			inputColor="#1E293B"
 			optionColor="#1E293B"
 			infoColor="#1E293B"
 			iconColor="#fff"
+			label="Search in free apis..."
+			loadingMsg="Suggestions loading"
+			:noOptionsMsg="(searchText) => `Your search '${searchText}' did not match any options.`"
 			:textKey="(option) => option?.API"
 			:searchValue="searchText"
 			:options="filterBySearch"
