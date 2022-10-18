@@ -41,10 +41,4 @@ const selectedOptionHandler = () => {
 .selected {
 	@apply bg-slate-700;
 }
-
-mark{
-	background-color: v-bind(invertColor(color));
-	padding: 0 3px;
-	border-radius: 5px
-}
 </style>
