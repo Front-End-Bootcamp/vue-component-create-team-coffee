@@ -6,6 +6,12 @@
 	import { onMounted, ref} from 'vue';
 
 	const autocompleteData = ref([])
+	const isPopupActive = ref(false);
+
+	const togglePopup = () => {
+		isPopupActive.value = !(isPopupActive.value);
+		return togglePopup;
+	}
 	const searchText = ref("")
 	const isLoading = ref(false)
 
@@ -74,7 +80,10 @@
 			@setSearchText="searchTextHandler2"
 		></AutoComplete>
 
-		<Popup></Popup>
+		<button @click="isPopupActive = true">Show Popup</button>
+		<Teleport to="body">
+			<Popup @isPopupActive="togglePopup" :isPopupActive="isPopupActive"></Popup>
+		</Teleport>
 	</div>
 
 </template>
