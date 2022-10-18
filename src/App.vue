@@ -2,13 +2,17 @@
 	import AutoComplete from './components/AutoComplete/AutoComplete.vue';
 	import Popup from './components/Popup/Popup.vue';
 	import {delay} from '@/utils';
-	import {fetchData , filterBySearchInput} from '@/service/data';
+	import {fetchData} from '@/service/data';
 	import { onMounted, ref} from 'vue';
 
 	const autocompleteData = ref([])
 	const searchText = ref("")
-	const filterBySearch = ref(null)
 	const isLoading = ref(false)
+
+	const autocompleteData2 = ref([])
+	const searchText2 = ref("")
+	const isLoading2 = ref(false)
+
 	const selectHandler = (item) => {
 		console.log('item :>> ', item);
 	}
@@ -19,19 +23,23 @@
 		isLoading.value = false
 	})
 	
-	const searchTextHandler = async (text) => {
-		filterBySearch.value = []
+	const searchTextHandler = (text) => {
 		searchText.value = text
-		isLoading.value = true
+	}
+
+	const searchTextHandler2 = async (text) => {
+		autocompleteData2.value = []
+		searchText2.value = text
+		isLoading2.value = true
 		await delay(500)
-		const filteredData = filterBySearchInput(autocompleteData.value, searchText.value)
-		filterBySearch.value = searchText.value ? filteredData : null
-		isLoading.value = false
+		autocompleteData2.value = autocompleteData.value
+		isLoading2.value = false
 	}
 
 </script>
 <template>
 	<div class="app-container">
+
 		<AutoComplete
 			matchComponent="b"
 			inputColor="#1E293B"
@@ -43,11 +51,29 @@
 			:noOptionsMsg="(searchText) => `Your search '${searchText}' did not match any options.`"
 			:textKey="(option) => option?.API"
 			:searchValue="searchText"
-			:options="filterBySearch"
+			:options="autocompleteData"
 			:isLoading="isLoading"
 			@setSelected="selectHandler"
 			@setSearchText="searchTextHandler"
 		></AutoComplete>
+
+		<AutoComplete
+			matchComponent="mark"
+			inputColor="#1E293B"
+			optionColor="#1E293B"
+			infoColor="#1E293B"
+			iconColor="#fff"
+			label="Search in free apis..."
+			loadingMsg="Suggestions loading"
+			:noOptionsMsg="(searchText) => `Your search '${searchText}' did not match any options.`"
+			:textKey="(option) => option?.API"
+			:searchValue="searchText"
+			:options="autocompleteData2"
+			:isLoading="isLoading2"
+			@setSelected="selectHandler"
+			@setSearchText="searchTextHandler2"
+		></AutoComplete>
+
 		<Popup></Popup>
 	</div>
 
