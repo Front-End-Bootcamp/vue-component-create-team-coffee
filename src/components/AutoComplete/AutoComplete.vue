@@ -127,7 +127,7 @@ const emitHandler = (emitName, emitValue) => {
 
 <style lang="scss" scoped>
 .autocomplete {
-	@apply w-[500px] mx-auto mt-5 select-none rounded-md overflow-hidden;
+	@apply w-[500px] mx-auto select-none rounded-md overflow-hidden;
 
 	&__options{
 		@apply max-h-[300px] overflow-y-auto rounded-md divide-y border border-slate-400 border-t-0;
