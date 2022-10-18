@@ -1,13 +1,17 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useClickOnTarget } from '@/composables/clickOnTarget';
 import OptionComp from './AutoCompleteOption.vue';
 import InfoComp from './AutoCompleteInfo.vue';
 import InputComp from './AutoCompleteInput.vue';
+import { useClickOnTarget } from '@/composables/clickOnTarget';
+import {filterBySearchInput} from '@/service/data';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
 	options: Array,
-	searchValue: String,
+	searchValue: {
+		type:String,
+		default: ""
+	},
 	textKey: Function,
 	isLoading: Boolean,
 	loadingMsg: {
@@ -56,12 +60,13 @@ const inputValue = computed(() => searchText.value || optionText(selectedOption.
 const showOptions = computed(() => isClickOnTarget.value && !selectedOption.value && props.options?.length > 0) // Seçili option yoksa ve autocomplete'e focus olunduysa seçenekler gösterilir.
 const isClickOnTarget = useClickOnTarget(wrapper) //Hedefe yani autocomplete'e tıklanıldı mı.
 const optionText = (option) => props.textKey(option) //Dışarıdan alınan datanın text'i local data Örn: option.code, option.name.
+const filteredOptions = computed(() => filterBySearchInput(props.options, searchText.value, optionText))
 
 const selectOptionHandler = (option) => {
-	searchText.value = optionText(option)
+	searchText.value = ""
 	selectedOption.value = option
 	emitHandler("setSelected", option)
-	emitHandler("setSearchText", searchText.value)
+	emitHandler("setSearchText", optionText(option))
 }
 
 const searchTextHandler = (text) => {
@@ -105,12 +110,12 @@ const emitHandler = (emitName, emitValue) => {
 				:match="searchText"
 				:class="{'selected' : optionText(selectedOption) === optionText(option)}"
 				@setSelected="selectOptionHandler(option)"
-				v-for="option in props.options">
+				v-for="option in filteredOptions">
 			</OptionComp>
 		</div>
 
 		<InfoComp 
-			v-if="props.isLoading || props.options?.length < 1" 
+			v-if="props.isLoading || filteredOptions?.length < 1" 
 			:isLoading="props.isLoading" 
 			:searchText="searchText" 
 			:color="props.infoColor"

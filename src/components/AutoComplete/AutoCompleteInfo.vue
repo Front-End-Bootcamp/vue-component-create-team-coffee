@@ -9,7 +9,7 @@ const styleObj = {backgroundColor: props.color, color: invertColor(props.color)}
 <template>
 	<div class="info" :style="styleObj">
 		<div v-if="props.isLoading" class="info__message">{{props.loadingMsg}}</div>
-		<div v-else class="info__message">{{notFoundMsg}}</div>
+		<div v-if="props.searchText && !props.isLoading" class="info__message">{{notFoundMsg}}</div>
 	</div>
 
 </template>
