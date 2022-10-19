@@ -63,6 +63,8 @@
 			@setSearchText="searchTextHandler"
 		></AutoComplete>
 
+		<button class="popup-btn" @click="isPopupActive = true">Show Popup</button>
+
 		<AutoComplete
 			matchComponent="mark"
 			inputColor="#1E293B"
@@ -80,7 +82,6 @@
 			@setSearchText="searchTextHandler2"
 		></AutoComplete>
 
-		<button @click="isPopupActive = true">Show Popup</button>
 		<Teleport to="body">
 			<Popup @isPopupActive="togglePopup" :isPopupActive="isPopupActive"></Popup>
 		</Teleport>
@@ -89,5 +90,13 @@
 </template>
 
 <style scoped lang="scss">
+	.app-container{
+		@apply text-white flex mt-[100px]
+	}
+
+	.popup-btn{
+		@apply bg-[#1E293B] self-baseline rounded-md py-3 px-4 border border-slate-400
+	}
+
 
 </style>
