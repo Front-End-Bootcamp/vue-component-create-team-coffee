@@ -38,9 +38,7 @@ const clickHandler = (status) => {
 							accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects
 							pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.</slot>
 					</div>
-					<div class="popup__footer">
-						<button class="popup__button" @click="clickHandler()">Close</button>
-					</div>
+					<button class="popup__button" @click="clickHandler()">Close</button>
 				</div>
 			</div>
 		</div>
@@ -77,7 +75,7 @@ const clickHandler = (status) => {
 		border-radius: 3px;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 		transition: all 0.3s ease;
-		text-align: right;
+		text-align: center;
 	}
 
 	&__header {
@@ -93,10 +91,6 @@ const clickHandler = (status) => {
 		text-align: center;
 	}
 
-	&__footer {
-		text-align: center;
-	}
-
 	&__button {
 		background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
 		border: 0;
@@ -109,6 +103,7 @@ const clickHandler = (status) => {
 		line-height: 2.5;
 		outline: transparent;
 		padding: 0 1rem;
+		text-align: center;
 		text-decoration: none;
 		transition: box-shadow .2s ease-in-out;
 		user-select: none;
