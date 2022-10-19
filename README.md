@@ -28,7 +28,7 @@ A part of data which is used for this example is shown below.
 | loadingMsg             | String  | You can change the message when suggestions are loading                | "Options loading."                                     |
 | noOptionMsg            | Function| You can customize the message when suggestions are not found          | "Your search-${searchText}- did not match any options" |
 | label                  | String  | You can customize the text which in input placeholder              | "Type for search"                                      |
-| matchComponent         | String  | You can customize the matched options by changing matchComponent.        | "b".                                                   |
+| matchComponent         | String  | You can customize the matched options by changing matchComponent.        | "b"                                                   |
 | inputColor             | String  | You can change input area background color.            | "#1E293B"                                              |
 | optionsColor           | String  | You can change options area background color.              | "#1E293B"                                              |
 | iconColor              | String  | You can change icon background background color.       | "#fff"                                                 |
